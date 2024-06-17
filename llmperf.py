@@ -102,15 +102,20 @@ def run_rate_sampled_output_throughput(args):
 
 def add_parser(base_parser, vllm_batch_size = False):
     engine_parser = base_parser.add_subparsers(title="Engine", dest="engine", required=True)
-    parser = engine_parser.add_parser("openai", help="OpenAI API")
-    parser.add_argument("--model", type=str, default="", help="The model.")
-    parser.add_argument("--dtype", type=str, default="float16", help="The dtype.")
-    parser.add_argument("--gpu_memory_utilization", type=float, default=0.9, help="GPU Memory fraction")
-    #if vllm_batch_size:
-    #    parser.add_argument("--batch_size", type=int, default=128, help="The batch size.")
+    vllm_parser = engine_parser.add_parser("vllm", help="vLLM Engine")
+    vllm_parser.add_argument("--model", type=str, default="", help="The model.")
+    vllm_parser.add_argument("--api_key", type=str, default="API_KEY", help="The OpenAI API Key")
+    vllm_parser.add_argument("--api_base", type=str, default="http://localhost:8000/v1", help="The OpenAI Server URL")
 
-    parser.add_argument("--api_key", type=str, default="API_KEY", help="The OpenAI API Key")
-    parser.add_argument("--api_base", type=str, default="http://localhost:8080/v1", help="The OpenAI Server URL")
+    nim_parser = engine_parser.add_parser("nim", help="NVIDIA NIM (TRT-LLM engine with Triton)")
+    nim_parser.add_argument("--model", type=str, default="", help="The model.")
+    nim_parser.add_argument("--api_key", type=str, default="API_KEY", help="The OpenAI API Key")
+    nim_parser.add_argument("--api_base", type=str, default="http://localhost:8000/v1", help="The OpenAI Server URL")
+    
+    tgi_parser = engine_parser.add_parser("tgi", help="Text-generation-inference Engine by HuggingFace")
+    tgi_parser.add_argument("--model", type=str, default="", help="The model.")
+    tgi_parser.add_argument("--api_key", type=str, default="API_KEY", help="The OpenAI API Key")
+    tgi_parser.add_argument("--api_base", type=str, default="http://localhost:8080/v1", help="The OpenAI Server URL")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="LLMPerf tools to measure LLM performance")
