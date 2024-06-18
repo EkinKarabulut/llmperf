@@ -1,4 +1,1 @@
 openai==1.34.0
-vllm==0.4.3
-text-generation==2.0.4
-tritonclient==2.39.0
