@@ -66,11 +66,6 @@ def run_tpot(args):
     measurer = openai_perf.tpot_measurer(prompt, args)
     asyncio.run(async_run_test_n_times(measurer, args.iterations))
 
-def run_static_batch(args):
-    prompt = read_prompt_from_file(args.prompt_file)
-    measurer = None
-    run_test_n_times(measurer, args.iterations)
-
 def run_rate_throughput(args):
     prompt = read_prompt_from_file(args.prompt_file)
     measurer = None

@@ -2,7 +2,7 @@ import openai
 from timeit import default_timer as timer
 
 def ttft_measurer(prompt, args):
-    client, model = get_model(args)
+    client, model = get_client_model(args)
     def single_request():
         start = timer()
         completion = client.completions.create(
@@ -20,7 +20,7 @@ def ttft_measurer(prompt, args):
     return single_request
 
 def tpot_measurer(prompt, args):
-    client, model = get_model(args)
+    client, model = get_client_model(args)
     async def single_request():
         start = timer()
         completion = client.completions.create(
@@ -41,7 +41,7 @@ def tpot_measurer(prompt, args):
     return single_request
 
 def rate_throughput_measurer(prompt, args):
-    client, model = get_model(args, async_client = True)
+    client, model = get_client_model(args, async_client = True)
     async def single_request():
         completion = await client.completions.create(
             model=model,
@@ -58,7 +58,7 @@ def rate_throughput_measurer(prompt, args):
     return single_request
 
 def sample_rate_throughput_measurer(args):
-    client, model = get_model(args, async_client = True)
+    client, model = get_client_model(args, async_client = True)
     async def single_request(sample):
         completion = await client.completions.create(
             model=model,
@@ -75,7 +75,7 @@ def sample_rate_throughput_measurer(args):
     return single_request
 
 def sample_output_rate_throughput_measurer(args):
-    client, model = get_model(args, async_client = True)
+    client, model = get_client_model(args, async_client = True)
     async def single_request(sample):
         completion = await client.completions.create(
             model=model,
@@ -83,14 +83,14 @@ def sample_output_rate_throughput_measurer(args):
                         prompt=sample["prompt"],
                         temperature=1,
                         max_tokens=2048,
-                        top_k=15,
+                        #top_k=15,
                         n=1,
                         stream=False,
             )
         return completion.usage.completion_tokens
     return single_request
 
-def get_model(args, async_client=False):
+def get_client_model(args, async_client=False):
     client = (openai.Client if not async_client else openai.AsyncClient) (
         api_key = args.api_key,
         base_url = args.api_base
